@@ -1,6 +1,10 @@
-# Line Follower Robot
+# Robot Line Follower
 
 This Arduino project provides a modularized approach for controlling a robot using PID-based line following with sensor feedback.
+
+## Hardware
+
+### 1. Arduino UNO *x1*
 
 ## Components
 
@@ -10,12 +14,11 @@ This Arduino project provides a modularized approach for controlling a robot usi
   - `normal_speed`: Normal speed of the motors.
   - `min_speed`: Minimum allowable speed.
   - `max_speed`: Maximum allowable speed.
-  - Pins for left and right motor control (`left_in1`, `left_in2`, `left_en`, `right_in1`, `right_in2`, `right_en`).
+  - Pins for left and right motor control (`LEFT_IN1`, `LEFT_IN2`, `RIGHT_IN1`, `RIGHT_IN2`).
 
 - **Methods:**
   - `initialize()`: Sets up the motor control pins.
-  - `set_motor(int in1, int in2, int en, int speed)`: Controls individual motors.
-  - `get_direction(int speed)`: Determines motor direction.
+  - `set_motor(int in1, int in2, int speed)`: Controls individual motors and determine direction.
   - `normalize_speed(int speed)`: Ensures speed stays within defined limits.
   - `drive(int speed_difference, bool debug)`: Drives the robot with a speed difference between left and right motors.
 
@@ -43,6 +46,7 @@ This Arduino project provides a modularized approach for controlling a robot usi
   - `calculate_error()`: Calculates the error based on sensor readings.
   - `on_line(int sensor_pin)`: Checks if a sensor is on the line.
   - `get_line_position()`: Determines the position of the line based on sensor readings.
+  - `get_line_status()`: Determine the status of the current line position.
 
 ## Settings
 
