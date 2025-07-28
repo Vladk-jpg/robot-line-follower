@@ -1,3 +1,11 @@
+enum LineStatus {
+  LINE_NONE,
+  LINE_STRAIGHT,
+  LINE_LEFT_TURN,
+  LINE_RIGHT_TURN,
+  LINE_BIFURCATION
+};
+
 class Sensors {
 public:
   int threshold;
@@ -29,6 +37,33 @@ public:
     return line_position;
   }
 
+  LineStatus get_line_status() {
+    int current_line_position = get_line_position();
+
+    switch (current_line_position) {
+      case 0b0000:
+        return LINE_NONE;
+      case 0b0110:
+      case 0b0010:
+      case 0b0100:
+        return LINE_STRAIGHT;
+      case 0b0001:
+      case 0b0011:
+      case 0b0111:
+        return LINE_RIGHT_TURN;
+      case 0b1000:
+      case 0b1100:
+      case 0b1110:
+        return LINE_LEFT_TURN;
+      case 0b1111:
+      case 0b1001:
+        return LINE_BIFURCATION;
+      default:
+        // Если неизвестный шаблон, обрабатываем как отсутствие линии
+        return LINE_NONE;
+    }
+  }
+
   int calculate_error() {
     int error;
     int current_line_position = get_line_position();
@@ -57,7 +92,7 @@ public:
         break;
       case 0b1000:
         error = -errors[2];
-        break; 
+        break;
       case 0b1100:
         error = -errors[3];
         break;
