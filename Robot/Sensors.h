@@ -24,7 +24,7 @@ public:
 
   bool on_line(int sensor_pin) {
     int sensor_value = analogRead(sensor_pin);
-    return sensor_value < threshold;
+    return sensor_value > threshold;
   }
 
   int get_line_position() {
@@ -79,7 +79,7 @@ public:
         error = errors[3];
         break;
       case 0b0010:
-        error = errors[1];
+        error = -errors[1];
         break;
       case 0b0110:
         error = errors[0];
@@ -88,7 +88,7 @@ public:
         error = errors[0];
         break;
       case 0b0100:
-        error = -errors[1];
+        error = errors[1];
         break;
       case 0b1000:
         error = -errors[2];

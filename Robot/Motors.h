@@ -1,6 +1,6 @@
+#include "HardwareSerial.h"
 class Motors {
 public:
-  int normal_speed;
   int min_speed;
   int max_speed;
 
@@ -10,11 +10,10 @@ public:
   int right_in1;
   int right_in2;
 
-  Motors(int normal_speed, int min_speed, int max_speed,
+  Motors(int min_speed, int max_speed,
          int left_in1, int left_in2,
          int right_in1, int right_in2) {
 
-    this->normal_speed = normal_speed;
     this->min_speed = min_speed;
     this->max_speed = max_speed;
 
@@ -35,6 +34,7 @@ public:
 
   void set_motor(int in1_pin, int in2_pin, int speed) {
     int normalizedSpeed = normalize_speed(speed);
+    Serial.println(speed);
 
     if (speed > 0) {                          // Движение вперед
       analogWrite(in1_pin, 0);                // Устанавливаем один пин в 0 (или LOW)
@@ -52,9 +52,9 @@ public:
     return constrain(abs(speed), min_speed, max_speed);
   }
 
-  void drive(int speed_difference, bool debug) {
-    int left_speed = normal_speed + speed_difference;
-    int right_speed = normal_speed - speed_difference;
+  void drive(int speed, int speed_difference, bool debug) {
+    int left_speed = speed + speed_difference;
+    int right_speed = speed - speed_difference;
 
     set_motor(left_in1, left_in2, left_speed);
     set_motor(right_in1, right_in2, right_speed);
