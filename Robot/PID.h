@@ -12,11 +12,11 @@ public:
     this->KI = KI;
   }
 
-  int calculate_speed_difference(int proportional) {
+  int calculate_speed_difference(float proportional) {
     float derivative = proportional / 2 - last_proportional;
     integral = integral + proportional / 2;
     last_proportional = proportional / 2;
 
-    return proportional * KP + integral * KI + derivative * KD;
+    return int(proportional * KP + integral * KI + derivative * KD);
   }
 };

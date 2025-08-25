@@ -11,10 +11,10 @@ public:
   int threshold;
   int sensors_count;
   int *sensor_pins;
-  int *errors;
-  int previous_error;
+  float *errors;
+  float previous_error;
 
-  Sensors(int threshold, int sensors_count, int *sensor_pins, int *errors) {
+  Sensors(int threshold, int sensors_count, int *sensor_pins, float *errors) {
     this->threshold = threshold;
     this->sensor_pins = sensor_pins;
     this->sensors_count = sensors_count;
@@ -64,8 +64,8 @@ public:
     }
   }
 
-  int calculate_error() {
-    int error;
+  float calculate_error() {
+    float error;
     int current_line_position = get_line_position();
 
     switch (current_line_position) {

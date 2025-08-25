@@ -16,9 +16,9 @@
 #define IR_PIN 2
 
 const int SENSOR_PINS[SENSORS_COUNT] = { A3, A2, A1, A0 };
-const int ERRORS[4] = { 0, 1, 2, 3 };
+const float ERRORS[4] = { 0, 0.5, 2, 3 };
 
-const float KP = 80;
+const float KP = 40;
 const float KI = 0;
 const float KD = 30;
 
@@ -47,6 +47,8 @@ Motors motors(
 
 PID pid(KP, KI, KD);
 
+bool stop_flag = false;
+
 void setup() {
   Serial.begin(9600);
   motors.initialize();
@@ -66,16 +68,18 @@ void loop() {
 
     if (code == 0xE718FF00) {  //Forward
       line_currently_lost = false;
-      motors.drive(NORMAL_SPEED, speed_difference, DEBUG);
+      motors.drive(NORMAL_SPEED, 0, DEBUG);
     } else if (code == 0xAD52FF00) {  //Back
       motors.drive(-NORMAL_SPEED, 0, DEBUG);
       delay(2000);
     } else if (code == 0xA55AFF00) {  //Right
-      motors.drive(TURN_SPEED, 100, DEBUG);
-      delay(1000);
+      motors.drive(TURN_SPEED, 50, DEBUG);
+      delay(500);
     } else if (code == 0xF708FF00) {  //Left
-      motors.drive(TURN_SPEED, -100, DEBUG);
-      delay(1000);
+      motors.drive(TURN_SPEED, -50, DEBUG);
+      delay(500);
+    } else if (code == 0xE31CFF00) {  //Stop
+
     } else {
       // Логика для других кнопок
     }
