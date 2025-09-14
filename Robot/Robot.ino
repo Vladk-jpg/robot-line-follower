@@ -11,12 +11,14 @@
 #define RIGHT_IN1 10
 #define RIGHT_IN2 9
 
-#define THRESHOLD 300
+#define THRESHOLD 200
+#define DEAD_VALUE 10
 
 #define IR_PIN 2
 
 const int SENSOR_PINS[SENSORS_COUNT] = { A3, A2, A1, A0 };
 const float ERRORS[4] = { 0, 0.5, 2, 3 };
+const int SENSORS_LEDS[SENSORS_COUNT] = { 12, 8, 7, 4 };
 
 const float KP = 40;
 const float KI = 0;
@@ -38,7 +40,7 @@ const unsigned long LINE_LOSS_TIMEOUT_MS = 2000;
 
 IRrecv irReceiver(IR_PIN);
 
-Sensors sensors(THRESHOLD, SENSORS_COUNT, SENSOR_PINS, ERRORS);
+Sensors sensors(THRESHOLD, SENSORS_COUNT, SENSOR_PINS, ERRORS, DEAD_VALUE);
 
 Motors motors(
   MIN_SPEED, MAX_SPEED,
@@ -58,6 +60,7 @@ void setup() {
 void loop() {
   int error = sensors.calculate_error();
   int speed_difference = pid.calculate_speed_difference(error);
+  int health = sensors.get_sensors_health();
 
   LineStatus current_line_status = sensors.get_line_status();
 
@@ -84,6 +87,11 @@ void loop() {
       // Логика для других кнопок
     }
     irReceiver.resume();  // Возобновляем прием следующего сигнала
+  }
+
+  for (int i = 0; i < SENSORS_COUNT; ++i) {
+    boolean is_dead = bitRead(health, i);
+    digitalWrite(SENSORS_LEDS[i], is_dead);
   }
 
   switch (current_line_status) {

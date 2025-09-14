@@ -9,17 +9,19 @@ enum LineStatus {
 class Sensors {
 public:
   int threshold;
+  int dead_value;
   int sensors_count;
   int *sensor_pins;
   float *errors;
   float previous_error;
 
-  Sensors(int threshold, int sensors_count, int *sensor_pins, float *errors) {
+  Sensors(int threshold, int sensors_count, int *sensor_pins, float *errors, int dead_value) {
     this->threshold = threshold;
     this->sensor_pins = sensor_pins;
     this->sensors_count = sensors_count;
     this->errors = errors;
     this->previous_error = 0;
+    this->dead_value = dead_value;
   }
 
   bool on_line(int sensor_pin) {
@@ -105,5 +107,21 @@ public:
     }
     previous_error = error;
     return error;
+  }
+
+  bool is_dead(int sensor_pin) {
+    int sensor_value = analogRead(sensor_pin);
+    return sensor_value < dead_value;
+  }
+
+  // 1 - dead, 0 - alive
+  int get_sensors_health() {
+    int sensors_health = 0;
+    for (int i = 0; i < sensors_count; i++) {
+      if (is_dead(sensor_pins[i])) {
+        sensors_health += (1 << i);
+      }
+    }
+    return sensors_health;
   }
 };
