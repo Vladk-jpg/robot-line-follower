@@ -67,44 +67,24 @@ public:
   }
 
   float calculate_error() {
-    float error;
-    int current_line_position = get_line_position();
+    int weights[SENSORS_COUNT] = { 3, 2, -2, -3 }; // Соответствует SENSOR_PINS {A3, A2, A1, A0}
+    long weighted_sum = 0;
+    int sensors_on = 0;
 
-    switch (current_line_position) {
-      case 0b0001:
-        error = errors[2];
-        break;
-      case 0b0011:
-        error = errors[3];
-        break;
-      case 0b0111:
-        error = errors[3];
-        break;
-      case 0b0010:
-        error = -errors[1];
-        break;
-      case 0b0110:
-        error = errors[0];
-        break;
-      case 0b1111:
-        error = errors[0];
-        break;
-      case 0b0100:
-        error = errors[1];
-        break;
-      case 0b1000:
-        error = -errors[2];
-        break;
-      case 0b1100:
-        error = -errors[3];
-        break;
-      case 0b1110:
-        error = -errors[3];
-        break;
-      default:
-        error = previous_error;
-        break;
+    for (int i = 0; i < sensors_count; i++) {
+      if (on_line(sensor_pins[i])) {
+        weighted_sum += weights[i];
+        sensors_on++;
+      }
     }
+
+    if (sensors_on == 0) {
+      // Если линия потеряна, используем предыдущую ошибку
+      return previous_error;
+    }
+
+    // Нормализованная ошибка
+    float error = (float)weighted_sum / sensors_on;
     previous_error = error;
     return error;
   }
